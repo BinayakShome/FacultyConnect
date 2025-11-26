@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "310478281960",
+    "firebase_url": "https://facultyconnect-aec8f-default-rtdb.firebaseio.com",
+    "project_id": "facultyconnect-aec8f",
+    "storage_bucket": "facultyconnect-aec8f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:310478281960:android:68601582a84ab0bd753d5d",
+        "android_client_info": {
+          "package_name": "com.example.facultyconnect"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwC8SLZZ4P7XsoyeTXXqSFuC5HDkl-7e4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
