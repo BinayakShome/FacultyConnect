@@ -4,6 +4,7 @@ data class Faculty(
     val SI_No: String = "",
     val Name: String = "",
     val Email_ID: String = "",
+    val Room_No: String = "",
     val Mobile_Number: String =""
 )
 

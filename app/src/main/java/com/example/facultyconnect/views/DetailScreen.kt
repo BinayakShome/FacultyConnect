@@ -103,6 +103,7 @@ fun DetailScreen(
                 Text("Name: ${faculty.Name}", style = MaterialTheme.typography.titleLarge)
                 Text("Email: ${faculty.Email_ID}")
                 Text("Mobile: ${faculty.Mobile_Number}")
+                Text("Chamber: ${faculty.Room_No}")
 
                 Button(onClick = {
                     val intent = Intent(Intent.ACTION_DIAL).apply {

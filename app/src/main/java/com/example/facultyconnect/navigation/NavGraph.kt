@@ -1,6 +1,5 @@
 package com.example.facultyconnect.navigation
 
-import android.annotation.SuppressLint
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
