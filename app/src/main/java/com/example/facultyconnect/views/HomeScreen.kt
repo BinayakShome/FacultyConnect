@@ -110,22 +110,29 @@ fun HomeScreen(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
+
                             Text(
                                 text = faculty.Name,
                                 style = MaterialTheme.typography.titleMedium,
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis
+                                maxLines = 3,                 // ⬅ Allows wrapping on long names
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier
+                                    .weight(1f)               // ⬅ Ensures text takes remaining space
+                                    .padding(end = 12.dp)      // Space between text & button
                             )
 
                             Button(
                                 onClick = {
-                                    navController.navigate(Screen.DetailScreen.createRoute(faculty.Sl_No.toString()))
+                                    val id = faculty.Sl_No
+                                    navController.navigate(Screen.DetailScreen.createRoute(id.toString()))
+                                    Log.d("HomeScreen", "Navigating with Faculty ID: ${faculty.Sl_No}")
                                 }
                             ) {
                                 Text("Details")
                             }
                         }
                     }
+
                 }
             }
         }
