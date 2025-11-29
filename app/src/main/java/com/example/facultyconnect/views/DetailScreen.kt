@@ -3,6 +3,7 @@ package com.example.facultyconnect.views
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -45,6 +47,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.facultyconnect.data.Faculty
 import com.example.facultyconnect.vm.FacultyViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -127,6 +130,17 @@ fun DetailScreen(
                             InfoRow(label = "Email:", value = faculty.Email_ID)
                             InfoRow(label = "Mobile:", value = faculty.Mobile_Number)
                             InfoRow(label = "Chamber:", value = "${faculty.Room_No}, Campus 25")
+
+                            Button(
+                                onClick = {
+                                    val url = buildFacultyProfileUrl(faculty.Name)
+                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                    context.startActivity(intent)
+                                },
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text("Open Profile")
+                            }
                         }
                     }
 
@@ -206,4 +220,36 @@ fun ActionButton(icon: ImageVector, text: String, onClick: () -> Unit) {
             Text(text, fontSize = 12.sp)
         }
     }
+}
+
+fun buildFacultyProfileUrl(name: String): String {
+    Log.d("PROFILE_DEBUG", "ORIGINAL = \"$name\"")
+
+    var s = name.replace(Regex("(?i)(prof|dr|mr|ms|mrs|sir|shri|sri)(?=[A-Za-z])")) { m ->
+        m.value + " "
+    }.trim()
+
+    Log.d("PROFILE_DEBUG", "NORMALIZED = \"$s\"")
+
+    val prefixes = listOf("mr", "ms", "mrs", "dr", "prof", "sir", "shri", "sri")
+
+    val tokens = s.split(Regex("[\\s.()]+")).filter { it.isNotBlank() }
+
+    Log.d("PROFILE_DEBUG", "TOKENS = $tokens")
+
+    val filtered = tokens.filter { token ->
+        token.lowercase() !in prefixes
+    }
+
+    Log.d("PROFILE_DEBUG", "FILTERED TOKENS = $filtered")
+
+    val formatted = filtered.joinToString("-") { token ->
+        token.lowercase().replaceFirstChar { it.titlecase() }
+    }
+
+    val url = "https://cse.kiit.ac.in/profiles/$formatted/"
+
+    Log.d("PROFILE_DEBUG", "URL = $url")
+
+    return url
 }

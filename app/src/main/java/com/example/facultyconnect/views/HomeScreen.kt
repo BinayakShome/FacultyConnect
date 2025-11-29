@@ -3,6 +3,7 @@ package com.example.facultyconnect.views
 import android.app.Activity
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +18,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -38,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -67,98 +70,114 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("FacultyConnect") },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.DarkGray,
-                    titleContentColor = Color.White
-                )
+                title = {
+                    Text(
+                        text = "FacultyConnect",
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-        ) {
-            OutlinedTextField(
-                value = searchQuery,
-                onValueChange = { searchQuery = it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp),
-                placeholder = { Text("Search faculty by name") },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
-                singleLine = true,
-            )
-
-            LazyColumn(
+        if (facultyList.isEmpty() && !networkError) {
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 12.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                    .padding(innerPadding),
+                contentAlignment = Alignment.Center
             ) {
-                items(filteredList) { faculty ->
-                    Card(
-                        shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier.fillMaxWidth(),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
+                CircularProgressIndicator()
+            }
+        } else {
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+            ) {
+                OutlinedTextField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
+                    placeholder = { Text("Search faculty by name") },
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
+                    singleLine = true,
+                )
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 12.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(filteredList) { faculty ->
+                        Card(
+                            shape = RoundedCornerShape(12.dp),
+                            modifier = Modifier.fillMaxWidth(),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                         ) {
-
-                            Text(
-                                text = faculty.Name,
-                                style = MaterialTheme.typography.titleMedium,
-                                maxLines = 3,                 // ⬅ Allows wrapping on long names
-                                overflow = TextOverflow.Ellipsis,
+                            Row(
                                 modifier = Modifier
-                                    .weight(1f)               // ⬅ Ensures text takes remaining space
-                                    .padding(end = 12.dp)      // Space between text & button
-                            )
-
-                            Button(
-                                onClick = {
-                                    val id = faculty.Sl_No
-                                    navController.navigate(Screen.DetailScreen.createRoute(id.toString()))
-                                    Log.d("HomeScreen", "Navigating with Faculty ID: ${faculty.Sl_No}")
-                                }
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text("Details")
+
+                                Text(
+                                    text = faculty.Name,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    maxLines = 3,                 // ⬅ Allows wrapping on long names
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier
+                                        .weight(1f)               // ⬅ Ensures text takes remaining space
+                                        .padding(end = 12.dp)      // Space between text & button
+                                )
+
+                                Button(
+                                    onClick = {
+                                        val id = faculty.Sl_No
+                                        navController.navigate(Screen.DetailScreen.createRoute(id.toString()))
+                                        Log.d(
+                                            "HomeScreen",
+                                            "Navigating with Faculty ID: ${faculty.Sl_No}"
+                                        )
+                                    }
+                                ) {
+                                    Text("Details")
+                                }
                             }
                         }
-                    }
 
+                    }
                 }
             }
-        }
 
-        // ❌ Network Error Dialog
-        if (networkError) {
-            AlertDialog(
-                onDismissRequest = {},
-                title = { Text("No Internet Connection") },
-                text = { Text("Please check your internet connection and try again.") },
-                confirmButton = {
-                    TextButton(onClick = {
-                        facultyViewModel.fetchFaculty(context)
-                    }) {
-                        Text("Retry")
+            // ❌ Network Error Dialog
+            if (networkError) {
+                AlertDialog(
+                    onDismissRequest = {},
+                    title = { Text("No Internet Connection") },
+                    text = { Text("Please check your internet connection and try again.") },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            facultyViewModel.fetchFaculty(context)
+                        }) {
+                            Text("Retry")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = {
+                            // Close app
+                            (context as? Activity)?.finish()
+                        }) {
+                            Text("Close")
+                        }
                     }
-                },
-                dismissButton = {
-                    TextButton(onClick = {
-                        // Close app
-                        (context as? Activity)?.finish()
-                    }) {
-                        Text("Close")
-                    }
-                }
-            )
+                )
+            }
         }
     }
 }
