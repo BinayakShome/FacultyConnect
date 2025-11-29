@@ -14,23 +14,20 @@ import com.example.facultyconnect.vm.FacultyViewModel
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge() // Optional, for full screen layout
+        enableEdgeToEdge()
 
         setContent {
             FacultyConnectTheme {
-                // Provide a NavController
                 val navController = rememberNavController()
-
-                // Optional: Provide your FacultyViewModel
+                // create the ViewModel once, tied to the Activity
                 val facultyViewModel: FacultyViewModel = viewModel()
 
-                // Set up the NavHost
                 NavHost(
                     navController = navController,
                     startDestination = "main"
                 ) {
-                    // Main Navigation Graph
-                    mainNavGraph(navController)
+                    // Pass the SAME ViewModel instance into the nav graph
+                    mainNavGraph(navController, facultyViewModel)
                 }
             }
         }

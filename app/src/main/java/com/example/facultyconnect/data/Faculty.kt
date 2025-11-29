@@ -1,14 +1,9 @@
 package com.example.facultyconnect.data
 
 data class Faculty(
-    val SI_No: String = "",
-    val Name: String = "",
-    val Email_ID: String = "",
-    val Room_No: String = "",
-    val Mobile_Number: String =""
+    var Sl_No: Int = 0,
+    var Name: String = "",
+    var Email_ID: String = "",
+    var Mobile_Number: String = "",
+    var Room_No: String = ""
 )
-
-//"SI_No": "171",
-//"Name": "Mr. Vishal Meena",
-//"Email_ID": "vishal.meenafcs@kiit.ac.in",
-//"Mobile_Number": "8949379727"

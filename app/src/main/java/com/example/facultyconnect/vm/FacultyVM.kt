@@ -37,6 +37,6 @@ class FacultyViewModel : ViewModel() {
 
     fun getFacultyById(id: String): Faculty? {
         Log.d("FacultyVM", "Searching for faculty with ID: $id")
-        return _facultyList.value.firstOrNull { it.SI_No == id }
+        return _facultyList.value.firstOrNull { it.Sl_No.toString() == id }
     }
 }
