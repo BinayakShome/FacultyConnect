@@ -1,5 +1,6 @@
 package com.example.facultyconnect.views
 
+import android.app.Activity
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -21,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -41,19 +44,18 @@ import androidx.navigation.NavController
 import com.example.facultyconnect.navigation.Screen
 import com.example.facultyconnect.vm.FacultyViewModel
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     navController: NavController,
     facultyViewModel: FacultyViewModel
 ) {
     val context = LocalContext.current
-
     val facultyList by facultyViewModel.facultyList.collectAsState()
-
+    val networkError by facultyViewModel.networkError.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
 
-    // Fetch data only once
+    // Fetch data initially
     LaunchedEffect(true) {
         facultyViewModel.fetchFaculty(context)
     }
@@ -73,14 +75,11 @@ fun HomeScreen(
             )
         }
     ) { innerPadding ->
-
         Column(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
-
-            // 🔍 Search input
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
@@ -90,7 +89,6 @@ fun HomeScreen(
                 placeholder = { Text("Search faculty by name") },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
                 singleLine = true,
-                //textStyle = TextStyle(color = Color.White)
             )
 
             LazyColumn(
@@ -99,9 +97,7 @@ fun HomeScreen(
                     .padding(horizontal = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-
                 items(filteredList) { faculty ->
-
                     Card(
                         shape = RoundedCornerShape(12.dp),
                         modifier = Modifier.fillMaxWidth(),
@@ -114,31 +110,48 @@ fun HomeScreen(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-
                             Text(
                                 text = faculty.Name,
                                 style = MaterialTheme.typography.titleMedium,
-                                maxLines = 2,                 // ⬅ Allows wrapping on long names
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier
-                                    .weight(1f)               // ⬅ Ensures text takes remaining space
-                                    .padding(end = 12.dp)      // Space between text & button
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
                             )
 
                             Button(
                                 onClick = {
-                                    val id = faculty.Sl_No
-                                    navController.navigate(Screen.DetailScreen.createRoute(id.toString()))
-                                    Log.d("HomeScreen", "Navigating with Faculty ID: ${faculty.Sl_No}")
+                                    navController.navigate(Screen.DetailScreen.createRoute(faculty.Sl_No.toString()))
                                 }
                             ) {
                                 Text("Details")
                             }
                         }
                     }
-
                 }
             }
+        }
+
+        // ❌ Network Error Dialog
+        if (networkError) {
+            AlertDialog(
+                onDismissRequest = {},
+                title = { Text("No Internet Connection") },
+                text = { Text("Please check your internet connection and try again.") },
+                confirmButton = {
+                    TextButton(onClick = {
+                        facultyViewModel.fetchFaculty(context)
+                    }) {
+                        Text("Retry")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = {
+                        // Close app
+                        (context as? Activity)?.finish()
+                    }) {
+                        Text("Close")
+                    }
+                }
+            )
         }
     }
 }
