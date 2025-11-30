@@ -51,5 +51,5 @@ git clone https://github.com/BinayakShome/FacultyConnect.git
 
 Click the button below to download and install the latest version of **FacultyConnect** ⬇️
 
-[![Download APK](https://img.shields.io/badge/📱_Download_APK-FacultyConnect-blue?style=for-the-badge)](app/release/app-release.apk)
+[![Download APK](https://img.shields.io/badge/📱_Download_APK-FacultyConnect-blue?style=for-the-badge)](https://raw.githubusercontent.com/BinayakShome/FacultyConnect/master/app/release/app-release.apk?download=1)
 
