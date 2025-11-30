@@ -46,3 +46,10 @@ This project is built using **Jetpack Compose**, **Kotlin**, and **Firebase Real
 git clone https://github.com/BinayakShome/FacultyConnect.git
 
 # Open in Android Studio (Recommended: Ladybug/Bumblebee and above)
+```
+## 📥 Download & Install (APK)
+
+Click the button below to download and install the latest version of **FacultyConnect** ⬇️
+
+[![Download APK](https://img.shields.io/badge/📱_Download_APK-FacultyConnect-blue?style=for-the-badge)](app/release/app-release.apk)
+
