@@ -68,7 +68,6 @@ class FacultyViewModel : ViewModel() {
         }
     }
 
-
     // 🔍 Get Single Faculty by ID
     fun getFacultyById(id: String): Faculty? {
         Log.d("FacultyVM", "Searching for faculty with ID: $id")
